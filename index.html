@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="./URLhashed.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SkyWay - Room example</title>
+    <title>会議画面</title>
     <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <div class="container">
-      <div class="room">
+      <div class="room" id="room">
         
         <div>
           <div class="remote-streams" id="js-remote-streams">
@@ -20,7 +21,7 @@
           <span id="js-room-mode"></span>
           <input type="text" placeholder="Room Name" id="js-room-id">
           <button id="js-join-trigger">Join</button>
-          <button id="js-leave-trigger" onclick="openlogoutForm()"></button>
+          <button id="js-leave-trigger"></button>
           <button id="js-toggle-microphone"></button>
           <button id="js-toggle-camera"></button>
           <button id="js-url-share"></button>
@@ -28,22 +29,13 @@
         </div>
         <div class="popup-overlay"></div>
         <div class="popup">
-          <div class="popup-close" onclick="closelogoutForm()">&times;</div>
+          <div class="popup-close" onclick="closeprofileForm()">&times;</div>
           <div class="form">
-            <div class="avatar">
-              <img src="man.png" alt="">
             </div>
-            <div class="header">
-              退出しますか？
             </div>
-            <div class="element">
-              <button onclick="location.href='./meetinghome.html'" id="leave">OK</button>
           </div>
-          </div>
-      </div>
-      </div>
+        </div>
       <p class="meta" id="js-meta"></p>
-    </div>
     <script src="//cdn.webrtc.ecl.ntt.com/skyway-4.4.1.js"></script>
     <script src="./key.js"></script>
     <script src="./script.js"></script>

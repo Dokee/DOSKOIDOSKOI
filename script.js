@@ -56,7 +56,7 @@ const Peer = window.Peer;
       const localTracks = localStream.getAudioTracks()[0];
       localTracks.enabled = !localTracks.enabled;
       audioTrack.enabled = !audioTrack.enabled;
-      console.log("microphone = "+audioTracks.enabled)
+      console.log("microphone = "+audioTracks.enabled);
       toggleMicrophone.id = `${audioTracks.enabled ? 'js-toggle-microphone' : 'js-toggle-microphone_OFF'}`;
     });
 
@@ -72,6 +72,10 @@ const Peer = window.Peer;
   
     });
 
+    //退出ボタン
+    leaveTrigger.addEventListener('click', () => room.close(), { once: true });
+
+
     //共有ボタンを押してURLをコピー
     let copy_url = document.URL
     //copy_url = copy_url.replace('')
@@ -82,7 +86,7 @@ const Peer = window.Peer;
   });
 
   // eslint-disable-next-line require-atomic-updates
-  const peer = new Peer(roomId.value,{
+  const peer = new Peer(email,{
     key: '89e695ed-372d-437f-8248-d0c63f9c5e23',
     debug: 3,
   });
@@ -96,7 +100,7 @@ const Peer = window.Peer;
     }
 
     //入力されたルームIDに入室
-    const room = peer.joinRoom("roomId.value", {
+    const room = peer.joinRoom(roomId.value, {
       mode: getRoomModeByHash(),
       stream: localStream,
     });
@@ -116,16 +120,38 @@ const Peer = window.Peer;
       newVideo.id = "remote";
       newVideo.srcObject = stream;
       newVideo.playsInline = true;
-      //Video_div.onClick = openlogoutForm();
       // mark peerId to find it later at peerLeave event
-      Video_div.setAttribute('user-name',roomId.value);
-      newVideo.setAttribute('data-peer-id', stream.peerId);
-      Video_div.setAttribute('onclick',"openlogoutForm()");
+      Video_div.setAttribute('data-peer-id', stream.peerId);
+      Video_div.setAttribute('onclick',"openprofileForm()");
       newSpan.append(Video_div);
       Video_div.append(newVideo);
       remoteVideos.append(Video_div);
       await newVideo.play().catch(console.error);
+      //ポップアップ生成
+      Video_div.addEventListener('click',() => {
+        console.log("test_start");
+        const data = stream.peerId; // 渡したいデータ
+ 
+        $.ajax({
+            type: "POST", //　GETでも可
+            url: "request.php", //　送り先
+            data: { 'データ': data }, //　渡したいデータをオブジェクトで渡す
+            dataType : "json", //　データ形式を指定
+            scriptCharset: 'utf-8' //　文字コードを指定
+        })
+        .then(
+            function(param){　 //　paramに処理後のデータが入って戻ってくる
+                console.log(param); //　帰ってきたら実行する処理
+            },
+            function(XMLHttpRequest, textStatus, errorThrown){ //　エラーが起きた時はこちらが実行される
+                console.log(XMLHttpRequest); //　エラー内容表示
+        });
+              });
     });
+
+    //相手の画面のボタン
+    // const Video_div = document.getElementById('remote_div');
+    
 
     room.on('data', ({ data, src }) => {
       // Show a message sent to the room and who sent
@@ -177,16 +203,15 @@ const Peer = window.Peer;
   peer.on('error', console.error);
 })();
 
-function openlogoutForm(){
-  document.body.classList.add("showopenlogoutForm");
-}
 function closelogoutForm(){
   document.body.classList.remove("showopenlogoutForm");
 }
 
 function openprofileForm(){
   document.body.classList.add("showopenprofileForm");
+  console.log("test1");
 }
 function closeprofileForm(){
   document.body.classList.remove("showopenprofileForm");
+  console.log("test2");
 }
